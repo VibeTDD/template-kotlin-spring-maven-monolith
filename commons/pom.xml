@@ -20,8 +20,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.valiktor</groupId>
-            <artifactId>valiktor-core</artifactId>
+            <groupId>io.konform</groupId>
+            <artifactId>konform-jvm</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

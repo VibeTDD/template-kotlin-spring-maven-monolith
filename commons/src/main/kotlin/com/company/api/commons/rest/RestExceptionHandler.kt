@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.valiktor.ConstraintViolationException
 
 @RestControllerAdvice
 class RestExceptionHandler {
@@ -41,15 +40,15 @@ class RestExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handle(exception: BadRequestException) = createError(BAD_REQUEST, exception)
 
-    @ExceptionHandler(ConstraintViolationException::class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    fun handle(exception: ConstraintViolationException) = exception.constraintViolations.map {
-        ApiErrorV1(
-            code = it.constraint.name,
-            message = it.constraint.name,
-            attributes = mapOf(it.property to it.value)
-        )
-    }
+//    @ExceptionHandler(ConstraintViolationException::class)
+//    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+//    fun handle(exception: ConstraintViolationException) = exception.constraintViolations.map {
+//        ApiErrorV1(
+//            code = it.constraint.name,
+//            message = it.constraint.name,
+//            attributes = mapOf(it.property to it.value)
+//        )
+//    }
 
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

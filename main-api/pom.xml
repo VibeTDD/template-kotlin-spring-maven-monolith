@@ -22,8 +22,8 @@
 
         <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>org.valiktor</groupId>
-            <artifactId>valiktor-core</artifactId>
+            <groupId>io.konform</groupId>
+            <artifactId>konform-jvm</artifactId>
         </dependency>
     </dependencies>
 </project>
