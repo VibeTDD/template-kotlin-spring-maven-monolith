@@ -1,0 +1,5 @@
+package com.company.api.commons.utils
+
+fun Any?.isNull() = this == null
+
+fun Any?.isNotNull() = this != null

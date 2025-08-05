@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: ${ENV:local}
+  mvc:
+    format:
+      date: yyyy-MM-dd
+      time: HH:mm:ss
+  task:
+    scheduling:
+      pool.size: 5
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+logging:
+  level:
+    com.company.app.filter.RequestLoggingFilter: DEBUG
+  pattern.level: "%5p %X{userId}"

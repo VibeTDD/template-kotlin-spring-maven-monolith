@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.4</version>
+        <relativePath/>
+    </parent>
+
+    <modules>
+        <module>app</module>
+        <module>main-api</module>
+        <module>commons</module>
+        <module>module-template</module>
+    </modules>
+
+    <groupId>com.company.api</groupId>
+    <artifactId>api</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>${project.artifactId} ${project.version}</name>
+
+    <properties>
+        <!-- LANGUAGE VERSIONS -->
+        <java.version>21</java.version>
+        <kotlin.version>1.9.25</kotlin.version>
+
+        <!-- EXTERNAL DEPENDENCIES -->
+        <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
+        <jackson-module-kotlin.version>2.19.2</jackson-module-kotlin.version>
+        <kotest.version>5.9.1</kotest.version>
+        <conform.version>0.11.0</conform.version>
+        <springmockk.version>3.1.2</springmockk.version>
+        <mongock.version>5.4.0</mongock.version>
+        <firebase-admin.version>9.5.0</firebase-admin.version>
+        <google-auth.version>1.37.1</google-auth.version>
+        <shedlock.version>5.16.0</shedlock.version>
+        <ktor.version>2.3.13</ktor.version>
+        <mailjet-client.version>5.2.6</mailjet-client.version>
+        <ehcache.version>3.10.8</ehcache.version>
+        <google-genai.version>0.8.0</google-genai.version>
+        <jsoup.version>1.21.1</jsoup.version>
+
+        <!--PLUGINS-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <plugins.source.version>3.3.1</plugins.source.version>
+        <plugins.surefire.version>3.5.3</plugins.surefire.version>
+        <plugins.versions.version>2.18.0</plugins.versions.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- INTERNAL DEPENDENCIES -->
+            <dependency>
+                <groupId>com.company.api</groupId>
+                <artifactId>app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.company.api</groupId>
+                <artifactId>main-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.company.api</groupId>
+                <artifactId>commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.company.api</groupId>
+                <artifactId>module-template</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- EXTERNAL DEPENDENCIES -->
+            <dependency>
+                <groupId>net.javacrumbs.shedlock</groupId>
+                <artifactId>shedlock-spring</artifactId>
+                <version>${shedlock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.javacrumbs.shedlock</groupId>
+                <artifactId>shedlock-provider-mongo</artifactId>
+                <version>${shedlock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-core-jvm</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-java-jvm</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-content-negotiation-jvm</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-serialization-jackson-jvm</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-logging-jvm</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.conform</groupId>
+                <artifactId>conform</artifactId>
+                <version>${conform.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- EXTERNAL DEPENDENCIES -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+            <version>${kotlin-coroutines.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-reactor</artifactId>
+            <version>${kotlin-coroutines.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-reflect</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.microutils</groupId>
+            <artifactId>kotlin-logging-jvm</artifactId>
+            <version>${kotlin-logging-jvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson-module-kotlin.version}</version>
+        </dependency>
+
+        <!-- TESTING DEPENDENCIES-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ninja-squad</groupId>
+            <artifactId>springmockk</artifactId>
+            <version>${springmockk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <compilerPlugins>
+                        <plugin>spring</plugin>
+                    </compilerPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${plugins.source.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${plugins.surefire.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Should.java</include>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <argLine>--add-opens java.base/java.time=ALL-UNNAMED</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${plugins.versions.version}</version>
+                <executions>
+                    <execution>
+                        <id>update-parent</id>
+                        <goals>
+                            <goal>update-parent</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <allowMajorUpdates>false</allowMajorUpdates>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>update-properties</id>
+                        <goals>
+                            <goal>update-properties</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <allowMajorUpdates>false</allowMajorUpdates>
+                            <includeParent>false</includeParent>
+                            <ignoredVersions>
+                                <ignoreVersion type="regex">(?i).*-alpha([-.]?\d+)?</ignoreVersion>
+                                <ignoreVersion type="regex">(?i).*-beta([-.]?\d+)?</ignoreVersion>
+                                <ignoreVersion type="regex">(?i).*-rc([-.]?\d+)?</ignoreVersion>
+                                <ignoreVersion type="regex">(?i).*-m([-.]?\d+)?</ignoreVersion>
+                            </ignoredVersions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

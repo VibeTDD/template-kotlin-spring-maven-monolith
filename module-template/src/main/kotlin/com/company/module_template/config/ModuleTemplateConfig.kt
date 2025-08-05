@@ -1,0 +1,3 @@
+package com.company.module_template.config
+
+class ModuleTemplateConfig
