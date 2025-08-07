@@ -11,8 +11,8 @@ data class PageQueryV1(
 )
 
 data class SortQueryV1(
-    val field: String,
-    val order: String
+    val field: String = "updatedAt",
+    val order: String = "DESC"
 )
 
 data class RangeV1<T>(
@@ -26,7 +26,6 @@ interface PageParamsV1 {
     val sort: SortQueryV1
 }
 ```
-
 
 ### Simple Queries: GET with Query Parameters
 For simple queries, use GET requests with query parameters.
@@ -47,9 +46,9 @@ class UserControllerV1 {
 ```
 Note: Always use arrays for simple filters that are empty by default, examples:
 - `statuses: Set<String>` NOT `status: String`
-- `ageRange: Range<Int>?` it is ok, the filter is an object
+- `ageRange: RangeV1<Int>?` it is ok, the filter is an object
 
-### 5.2 Complex Queries: POST with JSON Body
+### Complex Queries: POST with JSON Body
 For complex filtering, use POST requests with JSON body.
 
 ```kotlin
@@ -62,6 +61,21 @@ data class SearchUsersParamsV1(
 data class UserFiltersV1(
     val dateRange: RangeV1<LocalDate>? = null,
     val statuses: List<String> = emptyList(),
-    val ageRange: Range<Int>? = null
+    val ageRange: RangeV1<Int>? = null
 )
 ```
+
+### Default Values Strategy
+
+Provide sensible defaults for all query parameters to make them optional for clients:
+
+- **Pagination**: `page.number=0, page.size=50`
+- **Sorting**: `sort.field="updatedAt", sort.order="DESC"`
+- **Simple filters**: Empty collections (`statuses: Set<String> = setOf()`)
+- **Complex filters**: Nullable objects (`dateRange: RangeV1<LocalDate>? = null`)
+
+### Filter Naming Patterns
+
+- Use plural nouns for collection filters: `statuses`, `types`, `categories`
+- Use `Range` suffix for range filters: `dateRange`, `ageRange`, `priceRange`
+- Use descriptive names for boolean filters: `includeInactive`, `onlyVerified`

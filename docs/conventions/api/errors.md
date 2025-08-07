@@ -34,8 +34,8 @@ Map each error type to appropriate HTTP status code:
 
 #### Input Validation Codes (Spring Bean Validation)
 - `NotNull` - Field cannot be null
-- `NotEmpty` - Field cannot be empty (for collections, maps, arrays)
-- `NotBlank` - Field cannot be blank (for strings - null, empty, or whitespace only)
+- `NotEmpty` - Field cannot be empty (for strings empty, collections, maps, arrays)
+- `NotBlank` - Field cannot be blank (for strings whitespace only)
 - `Size` - Field size is outside the specified range
 - `Min` - Numeric value is below minimum
 - `Max` - Numeric value is above maximum
@@ -64,34 +64,62 @@ object ErrorCode {
 }
 ```
 
-### Examples
+### Error Response Examples by Status Code
 
-#### Validation Errors (422)
+#### 400 Bad Request - Malformed Request
 ```kotlin
 ErrorResponseV1(
     errors = listOf(
         ErrorV1(
-            code = "NOT_NULL",
-            message = "Email is required",
-            attributes = mapOf("field" to "email", "value" to null)
-        ),
-        ErrorV1(
-            code = "INVALID_FORMAT", 
-            message = "Invalid email format",
-            attributes = mapOf("field" to "email", "value" to "invalid-email")
+            code = "BadRequest",
+            message = "Invalid JSON format",
+            attributes = mapOf()
         )
     )
 )
 ```
 
-#### Business Logic Errors (409)
+#### 404 Not Found - Resource Doesn't Exist
+
 ```kotlin
 ErrorResponseV1(
     errors = listOf(
         ErrorV1(
-            code = "DUPLICATE_EMAIL",
+            code = "NotFound",
+            message = "User not found",
+            attributes = mapOf("id" to "123e4567-e89b-12d3-a456-426614174000")
+        )
+    )
+)
+```
+
+#### 409 Conflict - Business Logic Errors
+```kotlin
+ErrorResponseV1(
+    errors = listOf(
+        ErrorV1(
+            code = "DuplicatedKey",
             message = "User with this email already exists",
             attributes = mapOf("email" to "john@example.com")
+        )
+    )
+)
+```
+
+#### 422 Unprocessable Entity - Validation Errors
+
+```kotlin
+ErrorResponseV1(
+    errors = listOf(
+        ErrorV1(
+            code = "NotBlank",
+            message = "Email is required",
+            attributes = mapOf("field" to "email", "value" to null)
+        ),
+        ErrorV1(
+            code = "Email",
+            message = "Invalid email format",
+            attributes = mapOf("field" to "email", "value" to "invalid-email")
         )
     )
 )

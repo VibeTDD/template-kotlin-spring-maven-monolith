@@ -59,3 +59,24 @@ data class StatusV1(
     val msg: String?
 )
 ```
+
+### 1.3 Package Organization Structure
+
+Organize API packages by domain with clear separation between commons and domain-specific DTOs.
+
+```markdown
+// Package organization
+api/
+├── commons/dto/
+│   ├── RangeV1                    # Shared between request and response
+│   ├── request/                   # PageQueryV1, SortQueryV1
+│   └── response/                  # ModelV1, PageV1, StatusV1, ErrorResponseV1
+├── user/
+│   ├── dto/request/               # CreateUserParamsV1, UpdateUserParamsV1, GetUserQueryV1
+│   ├── dto/response/              # UserV1
+│   └── UserControllerV1
+├── payment/
+│   ├── dto/request/               # CreatePaymentParamsV1, UpdatePaymentParamsV1
+│   ├── dto/response/              # PaymentV1
+│   └── PaymentControllerV1
+```
