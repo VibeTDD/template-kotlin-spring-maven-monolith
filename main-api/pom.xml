@@ -21,9 +21,5 @@
         </dependency>
 
         <!-- EXTERNAL DEPENDENCIES -->
-        <dependency>
-            <groupId>org.valiktor</groupId>
-            <artifactId>valiktor-core</artifactId>
-        </dependency>
     </dependencies>
 </project>
