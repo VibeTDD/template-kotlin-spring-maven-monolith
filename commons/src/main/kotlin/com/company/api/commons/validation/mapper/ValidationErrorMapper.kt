@@ -1,28 +1,47 @@
 package com.company.api.commons.validation.mapper
 
-import com.company.api.commons.validation.dto.ValidationErrorV1
+import com.company.api.commons.dto.response.ErrorV1
+import com.company.api.commons.validation.exception.ValidationError
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import org.springframework.validation.FieldError
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
-fun FieldError.toError() = ValidationErrorV1(
+fun FieldError.toV1() = createError(
     code = code ?: "Unknown",
+    message = defaultMessage ?: "Unexpected error",
     field = field,
     value = rejectedValue,
-    message = defaultMessage ?: "Unexpected error",
-    // TODO add attributes
 )
 
-fun MethodArgumentTypeMismatchException.toError() = ValidationErrorV1(
+fun MethodArgumentTypeMismatchException.toV1() = createError(
     code = "InvalidFormat",
     field = name,
     message = cause?.message ?: message!!,
-    attributes = mapOf(Pair("value", value ?: "")),
     value = value,
 )
 
-fun MissingKotlinParameterException.toError() = ValidationErrorV1(
+fun MissingKotlinParameterException.toV1() = createError(
     code = "NotNull",
     field = parameter.name.orEmpty(),
     message = "Must not be null",
+)
+
+fun ValidationError.toV1() = ErrorV1(
+    code = code,
+    message = message,
+    attributes = attributes,
+)
+
+private fun createError(
+    code: String,
+    message: String,
+    field: String,
+    value: Any? = null,
+) = ErrorV1(
+    code = code,
+    message = message,
+    attributes = mapOf(
+        "field" to field,
+        "value" to value,
+    ),
 )

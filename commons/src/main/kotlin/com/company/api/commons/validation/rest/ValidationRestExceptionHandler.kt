@@ -1,7 +1,8 @@
 package com.company.api.commons.validation.rest
 
-import com.company.api.commons.validation.dto.ValidationErrorV1
-import com.company.api.commons.validation.mapper.toError
+import com.company.api.commons.dto.response.ErrorResponseV1
+import com.company.api.commons.validation.exception.ValidationException
+import com.company.api.commons.validation.mapper.toV1
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
@@ -17,13 +18,17 @@ class ValidationRestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    fun handle(exception: MethodArgumentNotValidException): List<ValidationErrorV1> = exception.bindingResult.fieldErrors.map { it.toError() }
+    fun handle(exception: MethodArgumentNotValidException) = ErrorResponseV1(exception.bindingResult.fieldErrors.map { it.toV1() })
 
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    fun handle(exception: MethodArgumentTypeMismatchException): List<ValidationErrorV1> = listOf(exception.toError())
+    fun handle(exception: MethodArgumentTypeMismatchException) = ErrorResponseV1(listOf(exception.toV1()))
 
     @ExceptionHandler(MissingKotlinParameterException::class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    fun handle(exception: MissingKotlinParameterException) = listOf(exception.toError())
+    fun handle(exception: MissingKotlinParameterException) = ErrorResponseV1(listOf(exception.toV1()))
+
+    @ExceptionHandler(ValidationException::class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    fun handle(exception: ValidationException) = ErrorResponseV1(exception.errors.map {it.toV1()})
 }

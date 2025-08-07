@@ -1,11 +1,12 @@
 package com.company.api.commons.rest
 
-import com.company.api.commons.dto.response.ApiErrorV1
+import com.company.api.commons.dto.response.ErrorV1
 import com.company.api.commons.dto.response.ErrorCode.BAD_REQUEST
 import com.company.api.commons.dto.response.ErrorCode.DUPLICATED_KEY
 import com.company.api.commons.dto.response.ErrorCode.FORBIDDEN_ACCESS
 import com.company.api.commons.dto.response.ErrorCode.INTERNAL_ERROR
 import com.company.api.commons.dto.response.ErrorCode.NOT_FOUND
+import com.company.api.commons.dto.response.ErrorResponseV1
 import com.company.api.commons.exception.BadRequestException
 import com.company.api.commons.exception.ForbiddenException
 import com.company.api.commons.exception.ModelDuplicatedException
@@ -38,35 +39,16 @@ class RestExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handle(exception: BadRequestException) = createError(BAD_REQUEST, exception)
 
-    @ExceptionHandler(ValidationException::class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    fun handle(exception: ValidationException) = exception.errors.map {
-        ApiErrorV1(
-            code = it.code,
-            message = it.message,
-//            attributes = mapOf(it.field to it.value)
-        )
-    }
-
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handle(exception: Exception): ApiErrorV1 {
+    fun handle(exception: Exception): ErrorV1 {
         log.error(exception) { "An unexpected error occurred" }
 
-        return ApiErrorV1(
+        return ErrorV1(
             code = INTERNAL_ERROR,
             message = "An internal error occurred, please contact support"
         )
     }
-
-    // TODO Wrap in custom exception with user friendly message
-//    @ExceptionHandler(OptimisticLockingFailureException::class)
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    fun handle(exception: OptimisticLockingFailureException) = createError(OUTDATED_VERSION, exception)
-
-//    @ExceptionHandler(DataIntegrityViolationException::class)
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    fun handle(exception: DataIntegrityViolationException) = createError(DUPLICATED_KEY, exception)
 
     @ExceptionHandler(ModelDuplicatedException::class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -80,13 +62,17 @@ class RestExceptionHandler {
         code: String,
         exception: Exception,
         attributes: Map<String, Any?> = mapOf(),
-    ): ApiErrorV1 {
+    ): ErrorResponseV1 {
         log.warn { exception.message }
 
-        return ApiErrorV1(
-            code = code,
-            message = exception.message ?: "An error occurred, please contact support",
-            attributes = attributes,
+        return ErrorResponseV1(
+            listOf(
+                ErrorV1(
+                    code = code,
+                    message = exception.message ?: "An error occurred, please contact support",
+                    attributes = attributes,
+                )
+            )
         )
     }
 }
