@@ -6,14 +6,12 @@ import com.company.api.commons.dto.response.ErrorCode.DUPLICATED_KEY
 import com.company.api.commons.dto.response.ErrorCode.FORBIDDEN_ACCESS
 import com.company.api.commons.dto.response.ErrorCode.INTERNAL_ERROR
 import com.company.api.commons.dto.response.ErrorCode.NOT_FOUND
-import com.company.api.commons.dto.response.ErrorCode.OUTDATED_VERSION
 import com.company.api.commons.exception.BadRequestException
 import com.company.api.commons.exception.ForbiddenException
 import com.company.api.commons.exception.ModelDuplicatedException
 import com.company.api.commons.exception.ModelNotFoundException
+import com.company.api.commons.validation.exception.ValidationException
 import mu.KotlinLogging
-import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -40,15 +38,15 @@ class RestExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handle(exception: BadRequestException) = createError(BAD_REQUEST, exception)
 
-//    @ExceptionHandler(ConstraintViolationException::class)
-//    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-//    fun handle(exception: ConstraintViolationException) = exception.constraintViolations.map {
-//        ApiErrorV1(
-//            code = it.constraint.name,
-//            message = it.constraint.name,
-//            attributes = mapOf(it.property to it.value)
-//        )
-//    }
+    @ExceptionHandler(ValidationException::class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    fun handle(exception: ValidationException) = exception.errors.map {
+        ApiErrorV1(
+            code = it.code,
+            message = it.message,
+//            attributes = mapOf(it.field to it.value)
+        )
+    }
 
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -62,13 +60,13 @@ class RestExceptionHandler {
     }
 
     // TODO Wrap in custom exception with user friendly message
-    @ExceptionHandler(OptimisticLockingFailureException::class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    fun handle(exception: OptimisticLockingFailureException) = createError(OUTDATED_VERSION, exception)
+//    @ExceptionHandler(OptimisticLockingFailureException::class)
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    fun handle(exception: OptimisticLockingFailureException) = createError(OUTDATED_VERSION, exception)
 
-    @ExceptionHandler(DataIntegrityViolationException::class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    fun handle(exception: DataIntegrityViolationException) = createError(DUPLICATED_KEY, exception)
+//    @ExceptionHandler(DataIntegrityViolationException::class)
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    fun handle(exception: DataIntegrityViolationException) = createError(DUPLICATED_KEY, exception)
 
     @ExceptionHandler(ModelDuplicatedException::class)
     @ResponseStatus(HttpStatus.CONFLICT)

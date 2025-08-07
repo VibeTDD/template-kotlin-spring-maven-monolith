@@ -32,17 +32,9 @@
         <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
         <jackson-module-kotlin.version>2.19.2</jackson-module-kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <conform.version>0.11.1</conform.version>
         <springmockk.version>3.1.2</springmockk.version>
-        <mongock.version>5.4.0</mongock.version>
-        <firebase-admin.version>9.5.0</firebase-admin.version>
-        <google-auth.version>1.37.1</google-auth.version>
         <shedlock.version>5.16.0</shedlock.version>
         <ktor.version>2.3.13</ktor.version>
-        <mailjet-client.version>5.2.6</mailjet-client.version>
-        <ehcache.version>3.10.8</ehcache.version>
-        <google-genai.version>0.8.0</google-genai.version>
-        <jsoup.version>1.21.1</jsoup.version>
 
         <!--PLUGINS-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -110,11 +102,6 @@
                 <groupId>io.ktor</groupId>
                 <artifactId>ktor-client-logging-jvm</artifactId>
                 <version>${ktor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.konform</groupId>
-                <artifactId>konform-jvm</artifactId>
-                <version>${conform.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
