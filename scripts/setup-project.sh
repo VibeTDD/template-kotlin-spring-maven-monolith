@@ -1,230 +1,187 @@
 #!/bin/bash
 
 # VibeTDD Project Setup Script
-# Adapts the template project to a specific domain
-#
-# Usage: ./scripts/setup-project.sh PROJECT_NAME BASE_PACKAGE MODULE_NAME
-# Example: ./scripts/setup-project.sh payouts-api dev.vibetdd payouts
+# Based on VibeTDD Experiment 4.1: Project Setup and the Automation Reality Check
+# This script adapts the template for a specific project following the lessons learned
 
 set -e  # Exit on any error
 
-# Color codes for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
-
-# Function to print colored output
-print_status() {
-    echo -e "${GREEN}[INFO]${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
+# Configuration parameters
+PROJECT_NAME=""
+BASE_PACKAGE=""
+MODULE_NAME=""
 
 # Function to show usage
 show_usage() {
-    echo "Usage: ./scripts/$0 PROJECT_NAME BASE_PACKAGE MODULE_NAME"
+    echo "Usage: $0 --project-name <name> --base-package <package> --module-name <name>"
     echo ""
     echo "Parameters:"
-    echo "  PROJECT_NAME  - The name of the project (e.g., payouts-api)"
-    echo "  BASE_PACKAGE  - The base package name (e.g., dev.vibetdd)"
-    echo "  MODULE_NAME   - The module name (e.g., payouts)"
+    echo "  --project-name   Project name (e.g., 'payouts-api')"
+    echo "  --base-package   Base package name (e.g., 'dev.vibetdd')"
+    echo "  --module-name    Module name (e.g., 'payouts')"
     echo ""
     echo "Example:"
-    echo "  ./scripts/$0 payouts-api dev.vibetdd payouts"
-    echo ""
-    echo "This will:"
-    echo "  - Initialize git repository"
-    echo "  - Rename module-template to the specified module name"
-    echo "  - Update all package references"
-    echo "  - Update project name references"
-    echo "  - Convert ModuleTemplate class names to PascalCase module name"
-    echo "  - Test compilation"
-    echo "  - Stage all changes in git"
+    echo "  $0 --project-name payouts-api --base-package dev.vibetdd --module-name payouts"
 }
 
-# Check if correct number of arguments provided
-if [ $# -ne 3 ]; then
-    print_error "Incorrect number of arguments"
+# Function to convert first letter to uppercase
+to_first_upper() {
+    local word="$1"
+    local first=$(printf "%s" "$word" | cut -c1 | tr '[:lower:]' '[:upper:]')
+    local rest=$(printf "%s" "$word" | cut -c2-)
+    echo "$first$rest"
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --project-name)
+            PROJECT_NAME="$2"
+            shift 2
+            ;;
+        --base-package)
+            BASE_PACKAGE="$2"
+            shift 2
+            ;;
+        --module-name)
+            MODULE_NAME="$2"
+            shift 2
+            ;;
+        -h|--help)
+            show_usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown parameter: $1"
+            show_usage
+            exit 1
+            ;;
+    esac
+done
+
+# Validate required parameters
+if [[ -z "$PROJECT_NAME" || -z "$BASE_PACKAGE" || -z "$MODULE_NAME" ]]; then
+    echo "Error: Missing required parameters"
     show_usage
     exit 1
 fi
 
-# Parse arguments
-PROJECT_NAME="$1"
-BASE_PACKAGE="$2"
-MODULE_NAME="$3"
+# Get the script directory and project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# Convert module name to PascalCase for class names
-# Take first character, make it uppercase, then append the rest unchanged
-first=$(printf "%s" "$MODULE_NAME" | cut -c1 | tr '[:lower:]' '[:upper:]')
-rest=$(printf "%s" "$MODULE_NAME" | cut -c2-)
-MODULE_CLASS_NAME="$first$rest"
+# Change to project root directory
+cd "$PROJECT_ROOT"
 
-print_status "Starting project setup with parameters:"
+# Validate we're in the right directory (should contain module-template)
+if [[ ! -d "module-template" ]]; then
+    echo "Error: module-template directory not found in project root: $PROJECT_ROOT"
+    echo "Expected project structure:"
+    echo "  project-root/"
+    echo "  ├── scripts/$(basename "$0")"
+    echo "  ├── module-template/"
+    echo "  └── other-modules/"
+    exit 1
+fi
+
+echo "Script location: $SCRIPT_DIR"
+echo "Project root: $PROJECT_ROOT"
+echo "Starting project setup with:"
 echo "  Project Name: $PROJECT_NAME"
 echo "  Base Package: $BASE_PACKAGE"
 echo "  Module Name: $MODULE_NAME"
+
+# Convert module name to proper case for class names
+MODULE_CLASS_NAME=$(to_first_upper "$MODULE_NAME")
 echo "  Module Class Name: $MODULE_CLASS_NAME"
-echo ""
-
-# Check if we're in the project root (should contain both scripts directory and module-template)
-if [ ! -d "module-template" ]; then
-    print_error "module-template directory not found. Are you in the project root directory?"
-    print_warning "This script should be run from the project root as: ./scripts/setup-project.sh"
-    exit 1
-fi
-
-if [ ! -d "scripts" ]; then
-    print_warning "scripts directory not found. Make sure you're running from project root."
-fi
 
 # Step 1: Initialize git repository
-print_status "Initializing git repository..."
-if [ ! -d ".git" ]; then
-    git init
-else
-    print_warning "Git repository already exists, skipping git init"
-fi
+echo "Step 1: Initializing git repository..."
+git init
 
-# Step 2: Add all files to git
-print_status "Adding all files to git..."
+# Step 2: Initial commit of template
+echo "Step 2: Creating initial commit..."
 git add --all
+git commit -m "Initial template commit" || echo "Nothing to commit or git already initialized"
 
-# Step 3: Change project name in all modules
-print_status "Updating project name to '$PROJECT_NAME'..."
+# Step 3: Make a copy of module-template to temp directory
+echo "Step 3: Creating backup of module-template..."
+cp -r module-template /tmp/module-template-backup
 
-# Find and update project name in pom.xml files
+# Step 4: Rename module-template to the new module name
+echo "Step 4: Renaming module-template to $MODULE_NAME..."
+mv module-template "$MODULE_NAME"
+
+# Step 5: Update project name in all pom.xml files
+echo "Step 5: Updating project name to $PROJECT_NAME..."
 find . -name "pom.xml" -type f -exec sed -i.bak "s/api-template-modular-basic/$PROJECT_NAME/g" {} \;
 
-# Clean up backup files
-find . -name "*.bak" -type f -delete
+# Step 6: Rename package directories from com/company to new base package
+echo "Step 6: Renaming package directories..."
+# Convert package notation to directory path
+OLD_PACKAGE_PATH="com/company"
+NEW_PACKAGE_PATH=$(echo "$BASE_PACKAGE" | tr '.' '/')
 
-# Step 4: Replace package references
-print_status "Updating package references from 'com.company' to '$BASE_PACKAGE'..."
+# Find all directories with the old package structure and rename them
+find . -type d -path "*src/main/kotlin/$OLD_PACKAGE_PATH*" -o -path "*src/test/kotlin/$OLD_PACKAGE_PATH*" | while read dir; do
+    new_dir=$(echo "$dir" | sed "s|$OLD_PACKAGE_PATH|$NEW_PACKAGE_PATH|g")
+    echo "  Renaming directory: $dir -> $new_dir"
+    mkdir -p "$(dirname "$new_dir")"
+    mv "$dir" "$new_dir"
+done
 
-# Convert package notation to directory structure
-OLD_PACKAGE_DIR="com/company"
-NEW_PACKAGE_DIR=$(echo "$BASE_PACKAGE" | tr '.' '/')
+# Clean up empty com/company directories
+find . -type d -name "company" -empty -delete 2>/dev/null || true
+find . -type d -name "com" -empty -delete 2>/dev/null || true
 
-# Update package declarations in all Java/Kotlin files
-find . \( -name "*.java" -o -name "*.kt" \) -exec sed -i.bak "s/com\.company/$BASE_PACKAGE/g" {} \;
+# Step 7: Update package declarations in source files
+echo "Step 7: Updating package declarations in source files..."
+find . -name "*.kt" -type f -exec sed -i.bak "s/package com\.company/package $BASE_PACKAGE/g" {} \;
+find . -name "*.kt" -type f -exec sed -i.bak "s/import com\.company/import $BASE_PACKAGE/g" {} \;
 
-# Update package references in pom.xml files
-find . -name "pom.xml" -type f -exec sed -i.bak "s/com\.company/$BASE_PACKAGE/g" {} \;
+# Step 8: Update ModuleTemplate references to new module name
+echo "Step 8: Updating ModuleTemplate references to $MODULE_CLASS_NAME..."
+find "$MODULE_NAME" -name "*.kt" -type f -exec sed -i.bak "s/ModuleTemplate/$MODULE_CLASS_NAME/g" {} \;
+find "$MODULE_NAME" -name "*.xml" -type f -exec sed -i.bak "s/ModuleTemplate/$MODULE_CLASS_NAME/g" {} \;
 
-# Rename package directories (handle both java and kotlin)
-print_status "Renaming package directories..."
-
-# Function to move package directories safely
-move_package_dirs() {
-    local src_type="$1"  # main or test
-    local lang_type="$2" # java or kotlin
-
-    find . -path "*src/$src_type/$lang_type/$OLD_PACKAGE_DIR" -type d | while read -r dir; do
-        if [ -d "$dir" ]; then
-            new_dir=$(echo "$dir" | sed "s|$OLD_PACKAGE_DIR|$NEW_PACKAGE_DIR|")
-            mkdir -p "$(dirname "$new_dir")"
-            print_status "Moving $src_type/$lang_type package: $dir -> $new_dir"
-            mv "$dir" "$new_dir"
-        fi
-    done
-}
-
-# Move all package directories
-move_package_dirs "main" "java"
-move_package_dirs "test" "java"
-move_package_dirs "main" "kotlin"
-move_package_dirs "test" "kotlin"
-
-# Clean up empty old package structure
-print_status "Cleaning up empty old package directories..."
-# Remove company directories first, then com directories
-find . -path "*/src/*/java/com/company" -type d -delete 2>/dev/null || true
-find . -path "*/src/*/kotlin/com/company" -type d -delete 2>/dev/null || true
-find . -path "*/src/*/java/com" -type d -delete 2>/dev/null || true
-find . -path "*/src/*/kotlin/com" -type d -delete 2>/dev/null || true
-
-# More aggressive cleanup - remove any remaining com directories that are empty
-find . -name "com" -type d -empty -delete 2>/dev/null || true
-find . -path "*/com" -type d -empty -delete 2>/dev/null || true
-
-# Clean up backup files
-find . -name "*.bak" -type f -delete
-
-# Step 5: Rename module-template to the new module name
-print_status "Renaming module-template to '$MODULE_NAME'..."
-
-if [ -d "module-template" ]; then
-    mv "module-template" "$MODULE_NAME"
-    print_status "Renamed module-template directory to $MODULE_NAME"
-else
-    print_error "module-template directory not found"
-    exit 1
-fi
-
-# Step 6: Replace ModuleTemplate with the new class name
-print_status "Updating class names from 'ModuleTemplate' to '$MODULE_CLASS_NAME'..."
-
-# Update all Java/Kotlin files
-find . \( -name "*.java" -o -name "*.kt" \) -exec sed -i.bak "s/ModuleTemplate/$MODULE_CLASS_NAME/g" {} \;
-
-# Update pom.xml files for module references
+# Step 9: Update module-template references in pom.xml files
+echo "Step 9: Updating module references in pom.xml files..."
 find . -name "pom.xml" -type f -exec sed -i.bak "s/module-template/$MODULE_NAME/g" {} \;
 
-# Update any other configuration files that might reference the module
-find . \( -name "*.xml" -o -name "*.yml" -o -name "*.yaml" -o -name "*.properties" \) -exec sed -i.bak "s/module-template/$MODULE_NAME/g" {} \;
-find . \( -name "*.xml" -o -name "*.yml" -o -name "*.yaml" -o -name "*.properties" \) -exec sed -i.bak "s/ModuleTemplate/$MODULE_CLASS_NAME/g" {} \;
-
-# Clean up backup files
+# Step 10: Clean up backup files
+echo "Step 10: Cleaning up backup files..."
 find . -name "*.bak" -type f -delete
 
-# Final cleanup of any remaining empty com directories
-print_status "Final cleanup of old package directories..."
-find . -name "com" -type d -empty -delete 2>/dev/null || true
-find . -path "*/com" -type d -empty -delete 2>/dev/null || true
-# Also remove any company directories that might still exist
-find . -name "company" -type d -empty -delete 2>/dev/null || true
-
-# Step 7: Test compilation
-print_status "Testing compilation with 'mvn clean test'..."
+# Step 11: Test compilation
+echo "Step 11: Testing compilation..."
 if mvn clean test -q; then
-    print_status "Compilation successful!"
+    echo "✓ Compilation successful!"
 else
-    print_error "Compilation failed. Please check the errors above and fix manually."
-    print_warning "Common issues:"
-    echo "  - Missing package imports after package rename"
-    echo "  - Circular dependencies between modules"
-    echo "  - Incorrect module references in pom.xml"
+    echo "✗ Compilation failed. Please check the errors above."
+    echo "You may need to manually fix some references."
     exit 1
 fi
 
-# Step 8: Add all changes to git
-print_status "Adding all changes to git..."
-git add --all
+# Step 12: Restore module-template from backup
+echo "Step 12: Restoring module-template from backup..."
+mv /tmp/module-template-backup module-template
 
-# Final status
-print_status "Project setup completed successfully!"
+# Step 13: Final git commit
+echo "Step 13: Creating final commit..."
+git add --all
+git commit -m "Setup project: $PROJECT_NAME with module: $MODULE_NAME"
+
+echo ""
+echo "✓ Project setup completed successfully!"
 echo ""
 echo "Summary of changes:"
-echo "  ✓ Git repository initialized"
-echo "  ✓ Project renamed to: $PROJECT_NAME"
-echo "  ✓ Package changed to: $BASE_PACKAGE"
-echo "  ✓ Module renamed to: $MODULE_NAME"
-echo "  ✓ Class names updated to: $MODULE_CLASS_NAME"
-echo "  ✓ Compilation tested successfully"
-echo "  ✓ All changes staged in git"
+echo "  - Project renamed to: $PROJECT_NAME"
+echo "  - Base package changed to: $BASE_PACKAGE"
+echo "  - New module created: $MODULE_NAME (with class names: $MODULE_CLASS_NAME)"
+echo "  - module-template restored for future use"
+echo "  - All changes committed to git"
 echo ""
 echo "Next steps:"
-echo "  1. Review the changes: git status"
-echo "  2. Commit the setup: git commit -m 'Initial project setup'"
-echo "  3. Start developing your $MODULE_NAME module!"
-echo ""
-echo "To run the setup again or for other projects:"
-echo "  ./scripts/setup-project.sh <project-name> <base-package> <module-name>"
+echo "  1. Review the generated code in the $MODULE_NAME module"
+echo "  2. Update README.md with project-specific information"
+echo "  3. Start implementing your business logic following VibeTDD conventions"
