@@ -25,5 +25,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+
+        <!-- TESTING DEPENDENCIES-->
+        <dependency>
+            <groupId>com.company.api</groupId>
+            <artifactId>lib-testing</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

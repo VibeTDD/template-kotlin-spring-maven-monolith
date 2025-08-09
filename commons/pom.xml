@@ -13,11 +13,20 @@
     <name>${project.artifactId} ${project.version}</name>
 
     <dependencies>
+        <!-- INTERNAL DEPENDENCIES -->
+
         <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- TESTING DEPENDENCIES-->
+        <dependency>
+            <groupId>com.company.api</groupId>
+            <artifactId>lib-testing</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

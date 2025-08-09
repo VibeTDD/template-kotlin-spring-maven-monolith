@@ -10,23 +10,11 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>module-template</artifactId>
+    <artifactId>lib-testing</artifactId>
     <name>${project.artifactId} ${project.version}</name>
 
     <dependencies>
         <!-- INTERNAL DEPENDENCIES-->
-        <dependency>
-            <groupId>com.company.api</groupId>
-            <artifactId>commons</artifactId>
-        </dependency>
-
         <!-- EXTERNAL DEPENDENCIES-->
-
-        <!-- TESTING DEPENDENCIES-->
-        <dependency>
-            <groupId>com.company.api</groupId>
-            <artifactId>lib-testing</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>

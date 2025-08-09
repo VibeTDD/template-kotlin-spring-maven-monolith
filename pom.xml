@@ -14,6 +14,7 @@
         <module>app</module>
         <module>main-api</module>
         <module>commons</module>
+        <module>lib-testing</module>
         <module>module-template</module>
     </modules>
 
@@ -26,7 +27,7 @@
     <properties>
         <!-- LANGUAGE VERSIONS -->
         <java.version>21</java.version>
-        <kotlin.version>1.9.25</kotlin.version>
+        <kotlin.version>2.2.0</kotlin.version>
 
         <!-- EXTERNAL DEPENDENCIES -->
         <kotlin-logging-jvm.version>3.0.5</kotlin-logging-jvm.version>
@@ -59,6 +60,11 @@
             <dependency>
                 <groupId>com.company.api</groupId>
                 <artifactId>commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.company.api</groupId>
+                <artifactId>lib-testing</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
