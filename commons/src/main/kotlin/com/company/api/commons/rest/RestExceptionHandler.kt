@@ -1,17 +1,16 @@
 package com.company.api.commons.rest
 
 import com.company.api.commons.dto.response.ErrorV1
-import com.company.api.commons.dto.response.ErrorCode.BAD_REQUEST
-import com.company.api.commons.dto.response.ErrorCode.DUPLICATED_KEY
-import com.company.api.commons.dto.response.ErrorCode.FORBIDDEN_ACCESS
-import com.company.api.commons.dto.response.ErrorCode.INTERNAL_ERROR
-import com.company.api.commons.dto.response.ErrorCode.NOT_FOUND
+import com.company.api.commons.validation.exception.ErrorCode.BAD_REQUEST
+import com.company.api.commons.validation.exception.ErrorCode.DUPLICATED_KEY
+import com.company.api.commons.validation.exception.ErrorCode.FORBIDDEN_ACCESS
+import com.company.api.commons.validation.exception.ErrorCode.INTERNAL_ERROR
+import com.company.api.commons.validation.exception.ErrorCode.NOT_FOUND
 import com.company.api.commons.dto.response.ErrorResponseV1
 import com.company.api.commons.exception.BadRequestException
 import com.company.api.commons.exception.ForbiddenException
 import com.company.api.commons.exception.ModelDuplicatedException
 import com.company.api.commons.exception.ModelNotFoundException
-import com.company.api.commons.validation.exception.ValidationException
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
