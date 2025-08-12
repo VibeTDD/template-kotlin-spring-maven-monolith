@@ -19,6 +19,7 @@ dist/
 Thumbs.db
 
 .nocommit
+.template
 
 pom.xml.versionsBackup
 *-deploy.sh

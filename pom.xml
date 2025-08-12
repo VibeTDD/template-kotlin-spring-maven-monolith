@@ -16,6 +16,7 @@
         <module>commons</module>
         <module>lib-testing</module>
         <module>module-template</module>
+        <module>example-domain</module>
     </modules>
 
     <groupId>com.company.api</groupId>

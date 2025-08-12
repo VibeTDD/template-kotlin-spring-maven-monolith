@@ -10,7 +10,7 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>lib-testing</artifactId>
+    <artifactId>example-domain</artifactId>
     <name>${project.artifactId} ${project.version}</name>
 
     <dependencies>
@@ -21,5 +21,12 @@
         </dependency>
 
         <!-- EXTERNAL DEPENDENCIES-->
+
+        <!-- TESTING DEPENDENCIES-->
+        <dependency>
+            <groupId>com.company.api</groupId>
+            <artifactId>lib-testing</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

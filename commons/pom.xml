@@ -23,10 +23,5 @@
         </dependency>
 
         <!-- TESTING DEPENDENCIES-->
-        <dependency>
-            <groupId>com.company.api</groupId>
-            <artifactId>lib-testing</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>
