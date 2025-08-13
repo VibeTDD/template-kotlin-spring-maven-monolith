@@ -6,19 +6,6 @@
 
 **VibeTDD Solution**: Write small, focused sets of related tests first, then implement them together.
 
-```kotlin
-// ❌ Classic TDD: Write one test → implement → write next test → implement
-// ✅ VibeTDD: Write focused test batch → verify they fail → implement together
-
-@Test
-fun `should accept valid amount`() { /* test 1 */ }
-
-@Test  
-fun `should reject when amount is invalid`() { /* test 2 */ }
-
-// Then implement all amount validation together
-```
-
 **Benefits:**
 - Reduces context switching overhead
 - Keeps AI sessions manageable
@@ -28,55 +15,17 @@ fun `should reject when amount is invalid`() { /* test 2 */ }
 ## Object Mother Pattern
 
 ### Single Factory Method with Valid Defaults
-Create one factory method that always produces valid objects by default:
-
-```kotlin
-object PaymentMother {
-    fun of(
-        userId: String = Rand.userId(),
-        amount: Double = Rand.amount(),
-        currency: String = Rand.currency()
-    ) = Payment(
-        userId = userId,
-        amount = amount,
-        currency = currency
-    )
-}
-```
+Create one factory method that always produces valid objects by default using `Rand` utility for realistic test data.
 
 ### Usage Principles
-- **Valid by default**: `PaymentMother.of()` always creates valid entity
+- **Valid by default**: `EntityMother.of()` always creates valid entity
 - **Override when you care**: Only specify values that matter for the test
 - **Random defaults**: Use `Rand` utility for realistic test data
-
-```kotlin
-// ✅ Good usage
-val validPayment = PaymentMother.of()                    // Valid random
-val invalidPayment = PaymentMother.of(amount = -10.0)    // Override for test
-val specificPayment = PaymentMother.of(currency = "EUR") // Override when needed
-
-// ❌ Bad usage  
-val payment = PaymentMother.of(amount = 25.0)            // Don't hardcode unless necessary
-```
 
 ## Random Data Utility
 
 ### Domain-Specific Valid Values
-`Rand` object provides generic utilities for random values generation. It is located in testing library, in `base_package.libs.testing` package so no need to create it everytime.
-
-Here are some examples:
-
-```kotlin
-object Rand {
-    fun uuid(): UUID {}
-    fun string(maxLength: Int = 10): String {}
-    fun int(min: Int = 0, max: Int = 100): Int {}
-    fun boolean(): Boolean {}
-    fun amount(min: Double = 1.0, max: Double = 1000.0): BigDecimal {}
-    fun currency(): String {}
-    fun email(): String {}
-}
-```
+`Rand` object provides generic utilities and is located in testing library at `base_package.libs.testing` package.
 
 **Rules:**
 - No business rules in `Rand` (don't enforce amount limits here)
@@ -85,127 +34,33 @@ object Rand {
 ## Test Structure and Naming
 
 ### Test Method Naming
-Use descriptive names with backticks:
-
-```kotlin
-@Test
-fun `should [expected behavior] when [condition]`() {
-    // Test implementation
-}
-
-@Test
-fun `should accept valid payment when all fields are correct`() { /* */ }
-
-@Test
-fun `should reject payment when amount is invalid`() { /* */ }
+Use descriptive names with backticks following pattern:
+```
+`should [expected behavior] when [condition]`
 ```
 
 ### Variable Naming Convention
 Use descriptive prefixes for test variables:
+- **given** prefix for input data (e.g., `givenUser`, `givenPayment`)
+- **expected** prefix for expected outcomes (e.g., `expectedResult`)
+- **actual** prefix for actual results (e.g., `actualResult`)
 
-```kotlin
-@Test
-fun `should process payment successfully when request is valid`() {
-    // Given
-    val givenPayment = PaymentMother.of()
-    val expectedResult = PaymentResult.Success(givenPayment.id)
-    
-    // When
-    val actualResult = paymentService.process(givenPayment)
-    
-    // Then
-    actualResult shouldBe expectedResult
-}
-```
-
-Note: in case of `ParameterizedTest` add `given` prefix for parameter names, e.q. `givenAmount`, `givenName`
+**Note**: In `ParameterizedTest`, add `given` prefix for parameter names (e.g., `givenAmount`, `givenName`)
 
 ### Test Structure
-Always use Given-When-Then structure with comments:
-
-```kotlin
-@Test
-fun `should reject payment when amount is invalid`() {
-    // Given
-    val givenPayment = PaymentMother.of(amount = -10.0)
-    
-    // When
-    val exception = shouldThrow<ValidationException> {
-        validator.validate(givenPayment)
-    }
-    
-    // Then
-    exception.code shouldBe PaymentErrorCode.INVALID_AMOUNT
-}
-```
+Always use Given-When-Then structure with comments to divide blocks.
 
 ## Error Collection Strategy
 
 ### Collect All Errors Before Failing
-Prefer comprehensive error collection over fast-fail:
-
-```kotlin
-// ✅ Good - Error collection for better UX
-class CurrencyValidator: Validator {
-    fun validate(payment: Payment): List<ValidationError> {
-        val errors = mutableListOf<ValidationError>()
-        
-        if (payment.currency.isEmpty()) {
-            errors.add(ValidationError(MISSING_CURRENCY, "Currency is required"))
-        }
-        
-        return errors
-    }
-}
-
-// Service collects all validation errors
-class PaymentService(
-    private val validators: List<Validator>
-) {
-    fun process(payment: Payment) {
-        val allErrors = validators.flatMap { it.validate(payment) }
-        
-        if (allErrors.isNotEmpty()) {
-            throw PaymentValidationException(allErrors)
-        }
-        
-        // Process payment
-    }
-}
-```
+Prefer comprehensive error collection over fast-fail for better user experience.
 
 ### Testing Error Collection
-```kotlin
-@Test
-fun `should collect all validation errors before failing`() {
-    // Given
-    val givenPayment = PaymentMother.of(amount = -10.0, currency = "")
-    
-    // When
-    val exception = shouldThrow<PaymentValidationException> {
-        paymentService.process(givenPayment)
-    }
-    
-    // Then
-    exception.errors shouldHaveSize 2
-    exception.errors.map { it.code } shouldContainExactlyInAnyOrder listOf(
-        PaymentErrorCode.INVALID_AMOUNT,
-        PaymentErrorCode.MISSING_CURRENCY
-    )
-}
-```
+Test that all validation errors are collected and reported together.
 
 ## Error Code Testing
 
 **CRITICAL**: Always test error codes, NEVER test error messages.
-
-```kotlin
-// ✅ Good - Test error code
-exception.code shouldBe PaymentErrorCode.INVALID_AMOUNT
-
-// ❌ Bad - Never test error messages
-exception.message shouldBe "Amount must be positive"
-```
 
 **Reasons:**
 - Error messages change for i18n/localization
@@ -231,32 +86,80 @@ Each layer tests only its responsibility:
 
 ## Parameterized Tests
 
-Use parameterized tests to reduce duplication:
+Use parameterized tests to reduce duplication for similar test scenarios:
 
+### ValueSource Examples
 ```kotlin
 @ParameterizedTest
 @ValueSource(doubles = [0.0, -5.0, -100.0])
 fun `should reject payment when amount is invalid`(givenAmount: Double) {
-    // Given
-    val givenPayment = PaymentMother.of(amount = givenAmount)
-    
-    // When & Then
-    val exception = shouldThrow<ValidationException> {
-        validator.validate(givenPayment)
-    }
-    exception.code shouldBe PaymentErrorCode.INVALID_AMOUNT
+    // Test implementation
 }
 
 @ParameterizedTest
 @ValueSource(strings = ["", "   ", "INVALID"])
 fun `should reject payment when currency is invalid`(givenCurrency: String) {
-    // Given
-    val givenPayment = PaymentMother.of(currency = givenCurrency)
-    
-    // When & Then
-    assertThrows<ValidationException> { validator.validate(givenPayment) }
+    // Test implementation
+}
+
+@ParameterizedTest
+@ValueSource(ints = [0, -1, -100])
+fun `should reject when count is not positive`(givenCount: Int) {
+    // Test implementation
 }
 ```
+
+### CsvSource Examples
+```kotlin
+@ParameterizedTest
+@CsvSource(
+    "user1, 25.0, EUR, true",
+    "user2, 30.0, USD, true", 
+    "'', 25.0, EUR, false",      // Empty user ID
+    "user3, -10.0, EUR, false",  // Negative amount
+    "user4, 25.0, JPY, false"    // Invalid currency
+)
+fun `should validate payment with various inputs`(
+    givenUserId: String,
+    givenAmount: Double, 
+    givenCurrency: String,
+    shouldBeValid: Boolean
+) {
+    // Test implementation
+}
+```
+
+### EnumSource Examples
+```kotlin
+@ParameterizedTest
+@EnumSource(PaymentStatus::class)
+fun `should handle all payment statuses`(givenStatus: PaymentStatus) {
+    // Test implementation
+}
+
+@ParameterizedTest
+@EnumSource(value = UserRole::class, names = ["ADMIN", "MODERATOR"])
+fun `should allow admin operations for privileged roles`(givenRole: UserRole) {
+    // Test implementation
+}
+```
+
+## Data Class Verification
+
+### Verify Whole Objects When Possible
+Prefer testing entire data classes over individual fields for better test reliability.
+
+**Benefits:**
+- **Robust**: Catches missed fields in assertions
+- **Maintainable**: Adding fields doesn't break existing tests
+- **Clear**: Expresses complete expected state
+- **Reliable**: Prevents partial verification bugs
+
+### When to Use Field-by-Field Verification
+Use individual field checks only when:
+- Testing partial updates
+- Verifying generated values (IDs, timestamps)
+- Asserting specific field transformations
 
 ## Test Independence
 
@@ -269,18 +172,3 @@ fun `should reject payment when currency is invalid`(givenCurrency: String) {
 - Each test should verify one specific behavior
 - Avoid testing multiple scenarios in a single test
 - Keep tests focused and clear
-
-```kotlin
-// ✅ Good - One concept per test
-@Test
-fun `should reject payment when currency is invalid`() { /* */ }
-
-@Test  
-fun `should create payment when it is valid`() { /* */ }
-
-// ❌ Bad - Multiple concepts in one test
-@Test
-fun `should validate and convert currency`() {
-    // Testing multiple currency actions in one test
-}
-```
