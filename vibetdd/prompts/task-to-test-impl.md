@@ -33,19 +33,20 @@ Read the attached convention files:
   - for `domain` part:
     - read `.template/vibetdd/conventions/testing/domain.md` file to understand the module specific testing principles 
     - read `.template/vibetdd/conventions/arch/module-domain.md` file to understand the module specific architecture principles 
-    - read `.template/example-domain/src` folder ONLY to understand the code examples to follow
+    - read `.template/example-domain/src` folder ONLY to understand the code examples to follow. Use LS tool to verify the folder exists, then read each example file
   - for `storage` part:
     - read `.template/vibetdd/conventions/testing/storage.md` file to understand the module specific testing principles 
     - read `.template/vibetdd/conventions/arch/module-storage.md` file to understand the module specific architecture principles
-    - read `.template/example-domain/src` folder ONLY to understand the code examples to follow
+    - read `.template/example-storage/src` folder ONLY to understand the code examples to follow. Use LS tool to verify the folder exists, then read each example file
   - for `api` part:
     - read `.template/vibetdd/conventions/testing/api.md` file to understand the module specific testing principles
     - read `.template/vibetdd/conventions/arch/module-api.md` file to understand the module specific architecture principles
-    - read `.template/example-api/src` folder ONLY to understand the code examples to follow
+    - read `.template/example-api/src` folder ONLY to understand the code examples to follow. Use LS tool to verify the folder exists, then read each example file
 
 Checkpoints:
-- If at least one file is missing (you got an error like 'Error: File does not exist'), stop here and report the issue
-- Ask yourself if you understood all conventions are read all examples. If you have doubts, stop here and ask your questions
+- If you cannot read the required example files, output 'STOPPING: Required files missing' and do not proceed
+- If ANY tool returns 'file does not exist' or 'folder does not exist', immediately STOP and report
+- Do not proceed to implementation until you have read and understood all convention and example files
 
 ## Read Story and Task Files
 
@@ -96,6 +97,52 @@ Checkpoints for implementation:
 - No existing tests should be broken by the implementation
 - Implementation follows convention patterns and examples
 - Logic is minimal and focused - no unnecessary complexity
+
+## Error Handling and Architecture Compliance
+
+### When You Encounter Technical Issues
+
+**CRITICAL: Do not compromise on architectural requirements due to implementation difficulties.**
+
+If you encounter compilation errors, setup issues, or technical roadblocks:
+
+- **Try exactly 3 approaches** to solve the issue:
+    - Document each attempt clearly
+    - Explain what failed and why
+    - Try different variations of the correct approach
+
+- **Do NOT switch to alternative patterns** that violate the conventions:
+    - ❌ Do not use mocks when real database testing is required
+    - ❌ Do not use unit tests when integration tests are specified
+    - ❌ Do not skip SpringBootTest setup when storage layer testing requires it
+    - ❌ Do not use different architectural patterns "because they're easier"
+
+- **After 3 failed attempts**, output exactly:
+
+```markdown
+   STOPPING: Cannot solve technical issue while maintaining architecture compliance
+
+   Issue: [brief description]
+   Required approach: [what the conventions specify]
+   Attempts made:
+ [attempt 1 and why it failed]
+ [attempt 2 and why it failed]
+ [attempt 3 and why it failed]
+
+   Need human guidance to proceed correctly.
+````
+
+- **Do NOT proceed** with any alternative approach that doesn't match the architectural requirements
+
+### Architecture Compliance Verification
+
+Before implementing any solution, verify:
+- Does this match the testing convention (unit vs integration vs real DB)?
+- Does this follow the examples from the template folders?
+- Am I using the correct tools (mocks vs real dependencies)?
+- Would this solution violate any architectural principles?
+
+If the answer to any verification question is "no", STOP and troubleshoot the correct approach instead.
 
 After implementing logic:
 - Add changes to git: `git add --all`

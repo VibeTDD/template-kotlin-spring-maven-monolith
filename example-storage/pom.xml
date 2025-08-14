@@ -10,7 +10,7 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>lib-testing</artifactId>
+    <artifactId>example-storage</artifactId>
     <name>${project.artifactId} ${project.version}</name>
 
     <dependencies>
@@ -19,15 +19,23 @@
             <groupId>com.company.api</groupId>
             <artifactId>commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.company.api</groupId>
+            <artifactId>example-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- EXTERNAL DEPENDENCIES-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+
+        <!-- TESTING DEPENDENCIES-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>com.company.api</groupId>
+            <artifactId>lib-testing</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

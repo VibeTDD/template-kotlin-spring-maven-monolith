@@ -1,15 +1,14 @@
 package com.company.examples.domain.validator
 
 import com.company.api.commons.validation.exception.ValidationError
-import com.company.examples.config.business.BusinessSpecificConfig
+import com.company.examples.domain.port.config.BusinessSpecificConfigPort
 import com.company.examples.domain.model.command.CreateExampleCommand
 import com.company.examples.domain.constant.ExampleErrorCodes
-import com.company.examples.domain.port.ExampleStoragePort
 import org.springframework.stereotype.Component
 
 @Component
 class CountryValidator(
-    private val businessSpecificConfig: BusinessSpecificConfig,
+    private val businessSpecificConfig: BusinessSpecificConfigPort,
 ) : ExampleValidator {
     
     override fun validate(command: CreateExampleCommand): List<ValidationError> {

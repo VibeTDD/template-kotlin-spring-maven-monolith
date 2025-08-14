@@ -1,6 +1,6 @@
 package com.company.examples.domain.validator
 
-import com.company.examples.config.business.BusinessSpecificConfig
+import com.company.examples.domain.port.config.BusinessSpecificConfigPort
 import com.company.examples.domain.constant.ExampleErrorCodes
 import com.company.examples.domain.mother.CreateExampleCommandMother
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -20,7 +20,7 @@ class CountryValidatorTest {
     private lateinit var validator: CountryValidator
 
     @MockK
-    private lateinit var businessSpecificConfig: BusinessSpecificConfig
+    private lateinit var businessSpecificConfig: BusinessSpecificConfigPort
 
     @Test
     fun `should return no errors when country is allowed`() {

@@ -2,7 +2,7 @@ package com.company.examples.domain.validator
 
 import com.company.examples.domain.constant.ExampleErrorCodes
 import com.company.examples.domain.mother.CreateExampleCommandMother
-import com.company.examples.domain.port.ExampleStoragePort
+import com.company.examples.domain.port.storage.ExampleStoragePort
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe

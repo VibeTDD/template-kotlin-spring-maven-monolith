@@ -3,9 +3,11 @@ package com.company.examples.domain.handler
 import com.company.api.commons.exception.ModelNotFoundException
 import com.company.api.commons.model.Model
 import com.company.examples.domain.model.Example
-import com.company.examples.domain.port.ExampleStoragePort
+import com.company.examples.domain.port.storage.ExampleStoragePort
+import org.springframework.stereotype.Component
 import java.util.*
 
+@Component
 class GetExampleUseCase(
     private val storagePort: ExampleStoragePort
 ) {

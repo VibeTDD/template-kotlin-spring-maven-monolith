@@ -8,7 +8,7 @@ import com.company.libs.testing.Rand
 import com.company.libs.testing.mother.ValidationErrorMother
 import com.company.examples.domain.model.Example
 import com.company.examples.domain.mother.CreateExampleCommandMother
-import com.company.examples.domain.port.ExampleStoragePort
+import com.company.examples.domain.port.storage.ExampleStoragePort
 import com.company.examples.domain.validator.ExampleValidator
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldHaveSize

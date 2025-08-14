@@ -1,4 +1,4 @@
-package com.company.examples.domain.port
+package com.company.examples.domain.port.storage
 
 import com.company.api.commons.model.Model
 import com.company.examples.domain.model.Example

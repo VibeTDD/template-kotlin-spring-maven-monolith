@@ -9,7 +9,7 @@ import com.company.api.commons.validation.exception.ValidationError
 import com.company.api.commons.validation.exception.ValidationException
 import com.company.examples.domain.model.Example
 import com.company.examples.domain.model.command.CreateExampleCommand
-import com.company.examples.domain.port.ExampleStoragePort
+import com.company.examples.domain.port.storage.ExampleStoragePort
 import com.company.examples.domain.validator.ExampleValidator
 import org.springframework.stereotype.Component
 import java.util.UUID

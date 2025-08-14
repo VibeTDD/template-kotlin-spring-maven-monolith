@@ -1,8 +1,10 @@
 package com.company.libs.testing
 
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.random.Random
 
@@ -49,6 +51,8 @@ object Rand {
     fun year(from: Int = 1900, to: Int = 2024): Int = Random.nextInt(from, to + 1)
 
     fun boolean(): Boolean = Random.nextBoolean()
+
+    fun instant(): Instant = Instant.now().truncatedTo(ChronoUnit.MILLIS)
 
     fun date(
         startYear: Int = 2020,

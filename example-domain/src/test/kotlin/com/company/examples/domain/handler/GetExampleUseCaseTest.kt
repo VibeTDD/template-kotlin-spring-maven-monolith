@@ -3,7 +3,7 @@ package com.company.examples.domain.handler
 import com.company.api.commons.exception.ModelNotFoundException
 import com.company.examples.domain.model.Example
 import com.company.examples.domain.mother.ExampleMother
-import com.company.examples.domain.port.ExampleStoragePort
+import com.company.examples.domain.port.storage.ExampleStoragePort
 import com.company.libs.testing.Rand
 import com.company.libs.testing.mother.ModelMother
 import io.kotest.assertions.throwables.shouldThrow

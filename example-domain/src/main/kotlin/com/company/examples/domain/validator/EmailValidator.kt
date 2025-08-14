@@ -3,7 +3,7 @@ package com.company.examples.domain.validator
 import com.company.api.commons.validation.exception.ValidationError
 import com.company.examples.domain.model.command.CreateExampleCommand
 import com.company.examples.domain.constant.ExampleErrorCodes
-import com.company.examples.domain.port.ExampleStoragePort
+import com.company.examples.domain.port.storage.ExampleStoragePort
 
 class EmailValidator(
     private val exampleStorage: ExampleStoragePort,
