@@ -1,18 +1,17 @@
 package com.company.examples.domain.validator
 
+import com.company.api.commons.validation.ValidationRule
 import com.company.api.commons.validation.exception.ValidationError
 import com.company.examples.domain.port.config.BusinessSpecificConfigPort
 import com.company.examples.domain.model.command.CreateExampleCommand
 import com.company.examples.domain.constant.ExampleErrorCodes
-import org.springframework.stereotype.Component
 
-@Component
 class CountryValidator(
-    private val businessSpecificConfig: BusinessSpecificConfigPort,
-) : ExampleValidator {
+    private val businessSpecificConfigPort: BusinessSpecificConfigPort,
+) : ValidationRule<CreateExampleCommand> {
     
     override fun validate(command: CreateExampleCommand): List<ValidationError> {
-        if (businessSpecificConfig.getAllowedCountries().contains(command.country)) return emptyList()
+        if (businessSpecificConfigPort.getAllowedCountries().contains(command.country)) return emptyList()
 
         return listOf(
             ValidationError(
@@ -20,7 +19,7 @@ class CountryValidator(
                 message = "The country is not allowed",
                 attributes = mapOf(
                     "country" to command.country,
-                    "allowedCountries" to businessSpecificConfig.getAllowedCountries()
+                    "allowedCountries" to businessSpecificConfigPort.getAllowedCountries()
                 )
             )
         )

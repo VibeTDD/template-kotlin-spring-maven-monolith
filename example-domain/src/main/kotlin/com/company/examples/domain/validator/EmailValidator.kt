@@ -1,5 +1,6 @@
 package com.company.examples.domain.validator
 
+import com.company.api.commons.validation.ValidationRule
 import com.company.api.commons.validation.exception.ValidationError
 import com.company.examples.domain.model.command.CreateExampleCommand
 import com.company.examples.domain.constant.ExampleErrorCodes
@@ -7,7 +8,7 @@ import com.company.examples.domain.port.storage.ExampleStoragePort
 
 class EmailValidator(
     private val exampleStorage: ExampleStoragePort,
-) : ExampleValidator {
+) : ValidationRule<CreateExampleCommand> {
     
     override fun validate(command: CreateExampleCommand): List<ValidationError> {
         val errors = mutableListOf<ValidationError>()

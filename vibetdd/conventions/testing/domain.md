@@ -14,18 +14,23 @@ Mock all external dependencies to focus purely on business logic:
 - IdProvider and TimeProvider from commons
 
 ### Mock Strategy
-Use MockK with annotations for clean test setup. Always mock providers for deterministic testing.
+Use MockK with direct mockk() calls for straightforward test setup. Always mock providers for deterministic testing.
 
 ### Relaxed Mocks for Storage
-Use RelaxedMockk for storage mocks when you only care about verification, not return values.
+Use relaxed mockk() for storage mocks when you only care about verification, not return values.
 
 ## Testing Patterns
 
-### Individual Validator Testing
-Test each validator component in isolation with mocked configuration to verify business rules.
+### Generic Validator Pattern
+Use CommandValidator<T> with ValidationRule<T> implementations for consistent validation across all domains.
 
-### Service Testing with Error Collection
-Test use cases with multiple validators to verify error collection and processing workflow.
+### Base Test Class Organization
+Create abstract base test class with common setup, then specific test classes for:
+- Valid scenarios: `CreateUserValidUseCaseTest`
+- Invalid scenarios by rule: `CreateUserInvalidEmailUseCaseTest`, `CreatePayoutInvalidCountryUseCaseTest`
+
+### Black Box Testing
+Test use cases as entry points with real implementations of internal logic (e.q. validators, convertors, mappers), mocking only external dependencies.
 
 ### Provider Mocking
 Always mock IdProvider and TimeProvider for deterministic testing of generated values.
@@ -52,10 +57,10 @@ Always mock IdProvider and TimeProvider for deterministic testing of generated v
 ## Testing Focus Areas
 
 ### Business Rule Validation
-Focus on testing that business constraints are properly enforced through validator components.
+Focus on testing that business constraints are properly enforced through ValidationRule implementations.
 
 ### Use Case Workflows
-Test that use cases properly orchestrate validation, business logic, and storage operations.
+Test that use cases properly orchestrate validation, business logic, and storage operations through black box testing.
 
 ### Configuration Integration
 Verify that business rules correctly use configuration values rather than hardcoded limits.
