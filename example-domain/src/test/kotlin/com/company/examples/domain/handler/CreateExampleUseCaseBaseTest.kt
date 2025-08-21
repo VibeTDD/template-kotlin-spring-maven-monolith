@@ -2,10 +2,11 @@ package com.company.examples.domain.handler
 
 import com.company.api.commons.utils.IdProvider
 import com.company.api.commons.utils.TimeProvider
+import com.company.api.commons.validation.exception.ValidationError
 import com.company.api.commons.validation.exception.ValidationException
 import com.company.examples.domain.model.command.CreateExampleCommand
 import com.company.examples.domain.mother.CreateExampleCommandMother
-import com.company.examples.domain.port.config.BusinessSpecificConfigPort
+import com.company.examples.domain.port.config.ExampleConfigPort
 import com.company.examples.domain.port.storage.ExampleStoragePort
 import com.company.examples.domain.validator.CreateExampleCommandValidator
 import com.company.libs.testing.Rand
@@ -19,7 +20,7 @@ abstract class CreateExampleUseCaseBaseTest {
 
     protected lateinit var useCase: CreateExampleUseCase
 
-    protected var businessSpecificConfigPort: BusinessSpecificConfigPort = mockk()
+    protected var exampleConfigPort: ExampleConfigPort = mockk()
     protected var exampleStoragePort: ExampleStoragePort = mockk(relaxed = true)
     protected var idProvider: IdProvider<UUID> = mockk()
     protected var timeProvider: TimeProvider = mockk()
@@ -30,7 +31,7 @@ abstract class CreateExampleUseCaseBaseTest {
     fun setUp() {
         useCase = CreateExampleUseCase(
             exampleValidator = CreateExampleCommandValidator(
-                businessSpecificConfigPort = businessSpecificConfigPort,
+                exampleConfigPort = exampleConfigPort,
                 exampleStoragePort = exampleStoragePort
             ),
             storagePort = exampleStoragePort,
@@ -46,17 +47,20 @@ abstract class CreateExampleUseCaseBaseTest {
     }
 
     protected fun setupValidMocks() {
-        every { businessSpecificConfigPort.getAllowedCountries() } returns setOf("USA", "CA")
+        every { exampleConfigPort.getAllowedCountries() } returns setOf("USA", "CA")
         every { idProvider.generate() } returns Rand.uuid()
         every { timeProvider.now() } returns Rand.instant()
     }
 
-    protected fun shouldBeInvalid(command: CreateExampleCommand, vararg errorCodes: String) {
+    protected fun shouldBeInvalid(command: CreateExampleCommand, errors: List<ValidationError>) {
         // When
-        val actualException = shouldThrow<ValidationException> {  useCase.execute(command) }
+        val actualException = shouldThrow<ValidationException> { useCase.execute(command) }
 
         // Then
-        actualException.errors.map { it.code } shouldBe errorCodes.toList()
+        actualException.errors shouldBe errors
         verify(exactly = 0) { exampleStoragePort.create(any()) }
     }
+
+    protected fun shouldBeInvalid(command: CreateExampleCommand, error: ValidationError) =
+        shouldBeInvalid(command, listOf(error))
 }

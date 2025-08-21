@@ -1,5 +1,5 @@
 package com.company.examples.domain.port.config
 
-interface BusinessSpecificConfigPort {
+interface ExampleConfigPort {
     fun getAllowedCountries(): Set<String>
 }

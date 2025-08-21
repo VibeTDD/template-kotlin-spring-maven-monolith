@@ -27,8 +27,8 @@ fun MissingKotlinParameterException.toV1() = createError(
 )
 
 fun ValidationError.toV1() = ErrorV1(
-    code = code,
-    message = message,
+    code = code.getCode(),
+    message = code.getMessage(),
     attributes = attributes,
 )
 

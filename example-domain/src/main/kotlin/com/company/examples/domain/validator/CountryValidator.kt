@@ -2,24 +2,24 @@ package com.company.examples.domain.validator
 
 import com.company.api.commons.validation.ValidationRule
 import com.company.api.commons.validation.exception.ValidationError
-import com.company.examples.domain.port.config.BusinessSpecificConfigPort
+import com.company.examples.domain.constant.ExampleErrorCode
+import com.company.examples.domain.constant.ExampleValidationField
+import com.company.examples.domain.port.config.ExampleConfigPort
 import com.company.examples.domain.model.command.CreateExampleCommand
-import com.company.examples.domain.constant.ExampleErrorCodes
 
 class CountryValidator(
-    private val businessSpecificConfigPort: BusinessSpecificConfigPort,
+    private val exampleConfigPort: ExampleConfigPort,
 ) : ValidationRule<CreateExampleCommand> {
     
     override fun validate(command: CreateExampleCommand): List<ValidationError> {
-        if (businessSpecificConfigPort.getAllowedCountries().contains(command.country)) return emptyList()
+        if (exampleConfigPort.getAllowedCountries().contains(command.country)) return emptyList()
 
         return listOf(
             ValidationError(
-                code = ExampleErrorCodes.COUNTRY_NOT_ALLOWED,
-                message = "The country is not allowed",
+                code = ExampleErrorCode.COUNTRY_NOT_ALLOWED,
                 attributes = mapOf(
-                    "country" to command.country,
-                    "allowedCountries" to businessSpecificConfigPort.getAllowedCountries()
+                    ExampleValidationField.COUNTRY to command.country,
+                    ExampleValidationField.ALLOWED_COUNTRIES to exampleConfigPort.getAllowedCountries()
                 )
             )
         )
