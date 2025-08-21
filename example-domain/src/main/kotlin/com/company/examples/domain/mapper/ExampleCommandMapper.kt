@@ -6,4 +6,5 @@ import com.company.examples.dto.request.CreateExampleParamsV1
 fun CreateExampleParamsV1.toCommand() = CreateExampleCommand(
     email = email,
     country = name,
+    salary = salary
 )

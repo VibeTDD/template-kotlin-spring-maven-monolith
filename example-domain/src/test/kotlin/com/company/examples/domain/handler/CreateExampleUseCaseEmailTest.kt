@@ -6,7 +6,7 @@ import com.company.examples.domain.constant.ExampleValidationField
 import io.mockk.every
 import org.junit.jupiter.api.Test
 
-class CreateExampleInvalidEmailUseCaseTest: CreateExampleUseCaseBaseTest() {
+class CreateExampleUseCaseEmailTest: CreateExampleUseCaseBaseTest() {
 
     @Test
     fun `should return error when email already exists`() {

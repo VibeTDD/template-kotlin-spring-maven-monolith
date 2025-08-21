@@ -13,6 +13,7 @@ class CreateExampleCommandValidator(
 ) : CommandValidator<CreateExampleCommand>(
     listOf(
         EmailValidator(exampleStoragePort),
-        CountryValidator(exampleConfigPort)
+        CountryValidator(exampleConfigPort),
+        SalaryValidator(exampleConfigPort),
     )
 )

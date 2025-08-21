@@ -31,6 +31,7 @@ class CreateExampleUseCase(
             data = Example(
                 email = command.email,
                 country = command.country,
+                salary = command.salary
             )
         )
 

@@ -111,6 +111,18 @@
                 <artifactId>ktor-client-logging-jvm</artifactId>
                 <version>${ktor.version}</version>
             </dependency>
+
+            <!-- TESTING DEPENDENCIES-->
+            <dependency>
+                <groupId>com.ninja-squad</groupId>
+                <artifactId>springmockk</artifactId>
+                <version>${springmockk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-assertions-core-jvm</artifactId>
+                <version>${kotest.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -149,25 +161,6 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
             <version>${jackson-module-kotlin.version}</version>
-        </dependency>
-
-        <!-- TESTING DEPENDENCIES-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.ninja-squad</groupId>
-            <artifactId>springmockk</artifactId>
-            <version>${springmockk.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.kotest</groupId>
-            <artifactId>kotest-assertions-core-jvm</artifactId>
-            <version>${kotest.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

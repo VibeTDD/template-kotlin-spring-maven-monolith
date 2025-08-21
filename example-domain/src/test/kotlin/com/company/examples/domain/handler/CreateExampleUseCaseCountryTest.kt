@@ -6,7 +6,7 @@ import com.company.examples.domain.constant.ExampleValidationField
 import io.mockk.every
 import org.junit.jupiter.api.Test
 
-class CreateExampleInvalidCountryUseCaseTest: CreateExampleUseCaseBaseTest() {
+class CreateExampleUseCaseCountryTest: CreateExampleUseCaseBaseTest() {
 
     @Test
     fun `should return error when country is not allowed`() {
