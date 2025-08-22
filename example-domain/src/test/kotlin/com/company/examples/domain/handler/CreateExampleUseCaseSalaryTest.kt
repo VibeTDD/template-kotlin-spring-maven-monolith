@@ -3,7 +3,6 @@ package com.company.examples.domain.handler
 import com.company.api.commons.validation.exception.ValidationError
 import com.company.examples.domain.constant.ExampleErrorCode
 import com.company.examples.domain.constant.ExampleValidationField
-import io.mockk.every
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
@@ -16,7 +15,6 @@ class CreateExampleUseCaseSalaryTest : CreateExampleUseCaseBaseTest() {
         val givenCommand = validCommand.copy(
             salary = givenSalary.toBigDecimal()
         )
-        setupValidMocks()
 
         // When - Then
         shouldBeValid(givenCommand)
@@ -29,7 +27,6 @@ class CreateExampleUseCaseSalaryTest : CreateExampleUseCaseBaseTest() {
         val givenCommand = validCommand.copy(
             salary = givenSalary.toBigDecimal()
         )
-        every { exampleConfigPort.getSalaryRange() } returns configuredRange
 
         // When - Then
         shouldBeInvalid(

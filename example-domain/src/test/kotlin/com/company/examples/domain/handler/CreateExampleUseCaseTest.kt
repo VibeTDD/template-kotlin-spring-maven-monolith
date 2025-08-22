@@ -8,7 +8,6 @@ open class CreateExampleUseCaseTest: CreateExampleUseCaseBaseTest() {
     fun `should create example when all business rules satisfied`() {
         // Given
         val givenCommand = validCommand
-        setupValidMocks()
 
         // When - Then
         shouldBeValid(givenCommand)

@@ -15,8 +15,6 @@ class CreateExampleUseCaseCountryTest: CreateExampleUseCaseBaseTest() {
             country = "ES"
         )
 
-        every { exampleConfigPort.getAllowedCountries() } returns setOf("USA", "CA")
-
         // When - Then
         shouldBeInvalid(
             command = givenCommand,

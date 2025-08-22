@@ -60,12 +60,13 @@ abstract class CreateExampleUseCaseBaseTest {
         generatedId = Rand.uuid()
         generatedTime = Rand.instant()
 
-        setupValidMocks()
+        setupMocks()
     }
 
-    protected fun setupValidMocks() {
+    private fun setupMocks() {
         every { exampleConfigPort.getAllowedCountries() } returns configuredAllowedCurrencies
         every { exampleConfigPort.getSalaryRange() } returns configuredRange
+        every { exampleStoragePort.existsByEmail(validCommand.email) } returns false
         every { idProvider.generate() } returns generatedId
         every { timeProvider.now() } returns generatedTime
     }
