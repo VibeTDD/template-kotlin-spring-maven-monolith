@@ -51,14 +51,15 @@ abstract class CreateExampleUseCaseBaseTest {
             timeProvider = timeProvider
         )
 
-        validCommand = CreateExampleCommandMother.of(
-            country = "CA",
-            salary = Rand.amount(200.00, 300.00)
-        )
         configuredAllowedCurrencies = setOf("USA", "CA")
         configuredRange = Range(BigDecimal(200.00), BigDecimal(300.00))
         generatedId = Rand.uuid()
         generatedTime = Rand.instant()
+
+        validCommand = CreateExampleCommandMother.of(
+            country = configuredAllowedCurrencies.random(),
+            salary = Rand.amount(configuredRange.from!!.toDouble(), configuredRange.to!!.toDouble())
+        )
 
         setupMocks()
     }
